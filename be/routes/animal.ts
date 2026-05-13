@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express'
 import {
   getAnimal,
   getAllAnimals,
@@ -6,11 +6,12 @@ import {
   updateAnimal,
   createAnimal,
   getFilteredAnimal,
-} from "../controller/animal";
+} from '../controller/animal'
 
-const router = Router();
+const router = Router()
 
-router.route("/").get(getAllAnimals).post(createAnimal);
-// router.route("/:type").get(getFilteredAnimal);
-router.route("/:id").get(getAnimal).put(updateAnimal).delete(deleteAnimal);
-export default router;
+router.route('/').get(getAllAnimals).post(createAnimal)
+router.route('/filter/:type').get(getFilteredAnimal)
+router.route('/:id').get(getAnimal).put(updateAnimal).delete(deleteAnimal)
+
+export default router

@@ -1,103 +1,77 @@
 import { Request, Response } from "express";
 import Animal from "../models/animal";
-import animalType from "../models/animalType";
 
 const getAnimal = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const animal = await Animal.findById({ _id: id });
-    console.log(animal);
+    const animal = await Animal.findById(id);
     res.status(200).json({ success: true, animal });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 const getFilteredAnimal = async (req: Request, res: Response) => {
   const { type } = req.params;
   try {
-    const animals = Animal.find({ animaltype: type }).populate("animaltype");
-
-    res.status(200).json({ success1234: true, animals });
+    const animals = await Animal.find({ animaltype: type }).populate("animaltype");
+    res.status(200).json({ success: true, animals });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const getAllAnimals = async (req: Request, res: Response) => {
   try {
-    const animal = await Animal.find({})
+    const animals = await Animal.find({})
       .populate("animaltype")
       .populate("publishedBy");
-    if (!animal) {
-      res.status(200).json({ message: "Animal hooson baina." });
-    }
-    res.status(200).json({ message: "amjilttai", animal });
+    res.status(200).json({ success: true, animals });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const createAnimal = async (req: Request, res: Response) => {
-  console.log(req.body);
   const { imgs, age, size, gender, health, location, publishedBy, animaltype } =
     req.body;
-  if (
-    !imgs ||
-    !age ||
-    !size ||
-    !gender ||
-    !health ||
-    !location ||
-    !publishedBy ||
-    !animaltype
-  ) {
-    res.status(400).json({ message: "Medeelliig buren oruulna uu" });
+  if (!imgs || !age || !size || !gender || !health || !location || !publishedBy || !animaltype) {
+    return res.status(400).json({ message: "All fields are required" });
   }
   try {
     const animal = await Animal.create(req.body);
-    res.status(201).json({ message: "amjilttai", animal });
+    res.status(201).json({ message: "Animal created successfully", animal });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const updateAnimal = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({
-      message: `${id} - tai Animal baihgueee`,
-    });
+    return res.status(400).json({ message: "Animal ID is required" });
   }
   try {
-    const animal = await Animal.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const animal = await Animal.findByIdAndUpdate(id, req.body, { new: true });
     if (!animal) {
-      res.status(400).json({ message: `${id} - олдохгүй байна.` });
+      return res.status(404).json({ message: `Animal with ID ${id} not found` });
     }
-    res.status(201).json({
-      message: `${id} - tai amitnii medeelel amjilttai soligdloo`,
-      animal,
-    });
+    res.status(200).json({ message: "Animal updated successfully", animal });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const deleteAnimal = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({
-      message: `${id} - tai amitnii oldsongui`,
-    });
+    return res.status(400).json({ message: "Animal ID is required" });
   }
   try {
     const animal = await Animal.findByIdAndDelete(id);
-    res
-      .status(201)
-      .json({ message: `${id} - tai amitanii medeelel ustlaa`, animal });
+    res.status(200).json({ message: `Animal ${id} deleted`, animal });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

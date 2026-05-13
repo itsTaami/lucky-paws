@@ -1,8 +1,9 @@
-import mongoose, { Schema, SchemaType, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { IAnimalType } from "./animalType";
+
 export interface IAnimal {
-  name: String;
-  imgs: [{ src: String }];
+  name: string;
+  imgs: [{ src: string }];
   age: number;
   size: string;
   gender: string;

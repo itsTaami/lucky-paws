@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import LayoutWithSidebar from "../profileLayout";
 import { useAnimals } from "@/hooks/usePets";
 import PetModal from "@/components/Dashboard/PetsModal/Modal";
-import { data } from "autoprefixer";
 
 export default function Pets() {
   const { animals, deleteAnimal } = useAnimals();
@@ -26,7 +25,6 @@ export default function Pets() {
   const handleOpen = () => {
     setModalOpen(!modalOpen);
     setAddNew(true);
-
     if (addNew) {
       setDataPass({
         name: "",
@@ -41,10 +39,9 @@ export default function Pets() {
         publishedBy: "",
         date: "",
       });
-    } else {
-      dataPass;
     }
   };
+
   return (
     <div className="relative overflow-x-auto container grid bg-blue-300 mx-auto">
       <div className="bg-red-300 justify-self-end">
@@ -58,42 +55,23 @@ export default function Pets() {
           + Add New
         </button>
       </div>
-      <table className="w-3/4 mx-auto text-sm text-left shadow-md text-gray-500 ">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
+      <table className="w-3/4 mx-auto text-sm text-left shadow-md text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
-            <th scope="col" className="px-6 py-3">
-              Pets name
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Type
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Gender
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Size
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Age
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Location
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Health
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Action
-            </th>
+            <th scope="col" className="px-6 py-3">Pets name</th>
+            <th scope="col" className="px-6 py-3">Type</th>
+            <th scope="col" className="px-6 py-3">Gender</th>
+            <th scope="col" className="px-6 py-3">Size</th>
+            <th scope="col" className="px-6 py-3">Age</th>
+            <th scope="col" className="px-6 py-3">Location</th>
+            <th scope="col" className="px-6 py-3">Health</th>
+            <th scope="col" className="px-6 py-3">Action</th>
           </tr>
         </thead>
         <tbody>
           {animals?.map((animal: any, idx: number) => (
-            <tr key={idx} className="bg-white border-b  ">
-              <th
-                scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
-              >
+            <tr key={idx} className="bg-white border-b">
+              <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {animal.name}
               </th>
               <td className="px-6 py-4">{animal.animaltype.title}</td>
@@ -107,7 +85,6 @@ export default function Pets() {
                   onClick={() => {
                     handleOpen();
                     setAddNew(false);
-                    console.log("EDIT BTN:", animal);
                     setDataPass({
                       name: animal.name,
                       age: animal.age,
@@ -122,16 +99,13 @@ export default function Pets() {
                       date: animal.date,
                     });
                   }}
-                  className="mx-2 font-medium text-blue-600  hover:underline"
+                  className="mx-2 font-medium text-blue-600 hover:underline"
                 >
                   Edit
                 </button>
                 <button
-                  onClick={() => {
-                    // setAnimalId(animal._id);
-                    deleteAnimal(animal._id);
-                  }}
-                  className="mx-2 font-medium text-red-600  hover:underline"
+                  onClick={() => deleteAnimal(animal._id)}
+                  className="mx-2 font-medium text-red-600 hover:underline"
                 >
                   Delete
                 </button>

@@ -3,11 +3,11 @@ import { IAnimal } from "./animal";
 import { IProduct } from "./products";
 
 export interface IUser {
-  name: String;
-  email: String;
-  password: String;
-  phone: Number;
-  profileImg: String;
+  name: string;
+  email: string;
+  password: string;
+  phone: number;
+  profileImg: string;
   role: string;
   createdAt: Date;
   favAnimal: [{ [key: string]: IAnimal }];
@@ -17,7 +17,7 @@ export interface IUser {
 const userSchema = new Schema<IUser>({
   name: {
     type: String,
-    required: [true, "Хэрэглэгчийн нэрийг заавал оруул"],
+    required: [true, "Name is required"],
   },
   profileImg: {
     type: String,
@@ -39,7 +39,7 @@ const userSchema = new Schema<IUser>({
   phone: { type: String },
   createdAt: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
     required: false,
   },
   favAnimal: [

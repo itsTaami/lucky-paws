@@ -4,89 +4,74 @@ import Product from "../models/products";
 const getProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    console.log("ID: ", id);
-    const baraa = await Product.findById({ _id: id });
-    res.status(200).json({ success: true, baraa });
+    const product = await Product.findById(id);
+    res.status(200).json({ success: true, product });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const getFilteredProduct = async (req: Request, res: Response) => {
   try {
     const { type } = req.params;
-    const product = await Product.find({ productType: type }).populate(
+    const products = await Product.find({ productType: type }).populate(
       "productType",
       "title"
     );
-    res.status(200).json({ success123: true, product });
+    res.status(200).json({ success: true, products });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const product = await Product.find({}).populate("productType");
-    if (!product) {
-      res.status(200).json({ message: "Baraa hooson baina." });
-    }
-    res.status(200).json({ message: "amjilttai", product });
+    const products = await Product.find({}).populate("productType");
+    res.status(200).json({ success: true, products });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const createProduct = async (req: Request, res: Response) => {
-  console.log(req.body);
   const { title, detail, imgList, price } = req.body;
   if (!title || !detail || !imgList || !price) {
-    res.status(400).json({ message: "Medeelliig buren oruulna uu" });
+    return res.status(400).json({ message: "All fields are required" });
   }
   try {
     const product = await Product.create(req.body);
-    console.log(product);
-    res.status(201).json({ message: "amjilttai", product });
+    res.status(201).json({ message: "Product created successfully", product });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({
-      message: `${id} - tai Baraa baihgueee`,
-    });
+    return res.status(400).json({ message: "Product ID is required" });
   }
   try {
-    const product = await Product.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const product = await Product.findByIdAndUpdate(id, req.body, { new: true });
     if (!product) {
-      res.status(400).json({ message: `${id} - олдохгүй байна.` });
+      return res.status(404).json({ message: `Product with ID ${id} not found` });
     }
-    res.status(201).json({
-      message: `${id} - tai baraanii medeelel amjilttai soligdloo`,
-      product,
-    });
+    res.status(200).json({ message: "Product updated successfully", product });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const deleteProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({
-      message: `${id} - tai baraa oldsongui`,
-    });
+    return res.status(400).json({ message: "Product ID is required" });
   }
   try {
     const product = await Product.findByIdAndDelete(id);
-    res.status(201).json({ message: `${id} - tai baraa ustlaa`, product });
+    res.status(200).json({ message: `Product ${id} deleted`, product });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express'
 import {
   getProduct,
   getAllProducts,
@@ -6,12 +6,12 @@ import {
   updateProduct,
   createProduct,
   getFilteredProduct,
-} from "../controller/products";
+} from '../controller/products'
 
-const router = Router();
+const router = Router()
 
-router.route("/").get(getAllProducts).post(createProduct);
-// router.route("/:productType").get(getFilteredProduct);
-router.route("/:id").get(getProduct).put(updateProduct).delete(deleteProduct);
-router.route("/:productType").get(getFilteredProduct);
-export default router;
+router.route('/').get(getAllProducts).post(createProduct)
+router.route('/filter/:type').get(getFilteredProduct)
+router.route('/:id').get(getProduct).put(updateProduct).delete(deleteProduct)
+
+export default router

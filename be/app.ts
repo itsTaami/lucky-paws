@@ -1,79 +1,68 @@
-import dotenv from "dotenv";
-dotenv.config();
-import express, { Express, Request, Response } from "express";
-import cors from "cors"
-import connectDB from "./config/be";
-import product from "./routes/product";
-import blog from "./routes/blog";
-import blogCategory from "./routes/blogCategory";
-import user from "./routes/user";
-import card from "./routes/card";
-import animal from "./routes/animal";
-import animalType from "./routes/animalType";
-import productType from "./routes/productType";
-import storeCategory from "./routes/storeCategory";
-import logger from "./middlewares/logger";
-import error from "./middlewares/error";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import multer from "multer";
-const { v2: cloudinary } = require('cloudinary');
+import dotenv from 'dotenv'
+dotenv.config()
+
+import express, { Express, Request, Response } from 'express'
+import cors from 'cors'
+import multer from 'multer'
+import { CloudinaryStorage } from 'multer-storage-cloudinary'
+const { v2: cloudinary } = require('cloudinary')
+
+import connectDB from './config/be'
+import user from './routes/user'
+import animal from './routes/animal'
+import animalType from './routes/animalType'
+import productType from './routes/productType'
+import storeCategory from './routes/storeCategory'
+import product from './routes/product'
+import blog from './routes/blog'
+import card from './routes/card'
+import blogCategory from './routes/blogCategory'
+import logger from './middlewares/logger'
+import error from './middlewares/error'
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
-});
+})
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-});
+const storage = new CloudinaryStorage({ cloudinary })
+const upload = multer({ storage })
 
-const upload = multer({ storage });
+const app = express()
 
-const app = express();
+const MONGO_URI = process.env.MONGO_URI || ''
+const PORT = process.env.PORT || 4000
 
-const MONGO_URI = process.env.MONGO_URI || "";
-const PORT = process.env.PORT;
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:3000', 'https://lucky-paws.vercel.app']
 
-app.use(cors());
-app.use(express.json());
-app.use(logger);
-app.use(error);
+app.use(cors({ origin: allowedOrigins, credentials: true }))
+app.use(express.json())
+app.use(logger)
 
-// app.use("/uploads", express.static("uploads"));
+app.use('/user', user)
+app.use('/animal', animal)
+app.use('/animalType', animalType)
+app.use('/productType', productType)
+app.use('/storeCategory', storeCategory)
+app.use('/product', product)
+app.use('/blog', blog)
+app.use('/card', card)
+app.use('/blogCategory', blogCategory)
 
-app.use("/user", user);
-app.use("/animal", animal);
-app.use("/animalType", animalType);
-app.use("/productType", productType);
-app.use("/storeCategory", storeCategory);
-app.use("/product", product);
-app.use("/blog", blog);
-app.use("/card", card);
-app.use("/blogCategory", blogCategory);
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello Express");
-});
+app.get('/', (_req: Request, res: Response) => {
+  res.json({ message: 'Lucky Paws API is running' })
+})
 
+app.post('/upload', upload.single('file'), (req: Request, res: Response) => {
+  res.status(200).json({ message: 'File uploaded successfully', file: req.file })
+})
 
-app.post('/upload', upload.single('file'), async  (req, res) => {
-  // Handle the uploaded file here
-  console.log(req.file, 'File uploaded successfully');
-  res.status(200).json({
-    messege: "amjilttai hadgallaa.",
-    file: req.file,
-  });
-});
+app.use(error)
 
-// app.post("/uploads", upload.single("image"), async (req:Request, res:Response) => {
-//   const result:any = await cloudinary.uploader.upload(req.file?.path)
-//   res.status(200).json({
-//     messege: "amjilttai hadgallaa.",
-//     imgUrl: result,
-//   });
-// });
-
-connectDB(MONGO_URI);
+connectDB(MONGO_URI)
 app.listen(PORT, () => {
-  console.log(`Server is running at ${PORT} port`);
-});
+  console.log(`Server running on port ${PORT}`)
+})

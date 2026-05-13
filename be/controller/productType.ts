@@ -4,77 +4,61 @@ import ProductType from "../models/productType";
 const getProductType = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const productType = await ProductType.findById({ _id: id });
+    const productType = await ProductType.findById(id);
     res.status(200).json({ success: true, productType });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const getAllProductTypes = async (req: Request, res: Response) => {
   try {
-    const productType = await ProductType.find({}).populate("storeCategory");
-    if (!productType) {
-      res.status(200).json({ message: "ProductType hooson baina." });
-    }
-    console.log("CHECK");
-    res.status(200).json({ message: "amjilttai", productType });
+    const productTypes = await ProductType.find({}).populate("storeCategory");
+    res.status(200).json({ success: true, productTypes });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const createProductType = async (req: Request, res: Response) => {
-  console.log(req.body);
   const { title, StoreCategory } = req.body;
   if (!title || !StoreCategory) {
-    res.status(400).json({ message: "Medeelliig buren oruulna uu" });
+    return res.status(400).json({ message: "All fields are required" });
   }
   try {
     const productType = await ProductType.create(req.body);
-    res.status(201).json({ message: "amjilttai", productType });
+    res.status(201).json({ message: "Product type created successfully", productType });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const updateProductType = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({
-      message: `${id} - tai ProductType baihgueee`,
-    });
+    return res.status(400).json({ message: "Product type ID is required" });
   }
   try {
-    const productType = await ProductType.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    if (!ProductType) {
-      res.status(400).json({ message: `${id} - олдохгүй байна.` });
+    const productType = await ProductType.findByIdAndUpdate(id, req.body, { new: true });
+    if (!productType) {
+      return res.status(404).json({ message: `Product type with ID ${id} not found` });
     }
-    res.status(201).json({
-      message: `${id} - tai amitnii medeelel amjilttai soligdloo`,
-      productType,
-    });
+    res.status(200).json({ message: "Product type updated successfully", productType });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const deleteProductType = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({
-      message: `${id} - tai amitnii oldsongui`,
-    });
+    return res.status(400).json({ message: "Product type ID is required" });
   }
   try {
     const productType = await ProductType.findByIdAndDelete(id);
-    res
-      .status(201)
-      .json({ message: `${id} - tai amitanii medeelel ustlaa`, productType });
+    res.status(200).json({ message: `Product type ${id} deleted`, productType });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

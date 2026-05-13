@@ -4,76 +4,61 @@ import StoreCategory from "../models/storeCategory";
 const getStoreCategory = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const storeCategory = await StoreCategory.findById({ _id: id });
+    const storeCategory = await StoreCategory.findById(id);
     res.status(200).json({ success: true, storeCategory });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const getAllStoreCategories = async (req: Request, res: Response) => {
   try {
-    const storeCategory = await StoreCategory.find({});
-    if (!storeCategory) {
-      res.status(200).json({ message: "StoreCategory hooson baina." });
-    }
-    res.status(200).json({ message: "amjilttai", storeCategory });
+    const storeCategories = await StoreCategory.find({});
+    res.status(200).json({ success: true, storeCategories });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const createStoreCategory = async (req: Request, res: Response) => {
-  console.log(req.body);
   const { title, description } = req.body;
   if (!title || !description) {
-    res.status(400).json({ message: "Medeelliig buren oruulna uu" });
+    return res.status(400).json({ message: "All fields are required" });
   }
   try {
     const storeCategory = await StoreCategory.create(req.body);
-    res.status(201).json({ message: "amjilttai", storeCategory });
+    res.status(201).json({ message: "Store category created successfully", storeCategory });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const updateStoreCategory = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({
-      message: `${id} - tai StoreCategory baihgueee`,
-    });
+    return res.status(400).json({ message: "Store category ID is required" });
   }
   try {
-    const storeCategory = await StoreCategory.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const storeCategory = await StoreCategory.findByIdAndUpdate(id, req.body, { new: true });
     if (!storeCategory) {
-      res.status(400).json({ message: `${id} - олдохгүй байна.` });
+      return res.status(404).json({ message: `Store category with ID ${id} not found` });
     }
-    res.status(201).json({
-      message: `${id} - tai amitnii medeelel amjilttai soligdloo`,
-      storeCategory,
-    });
+    res.status(200).json({ message: "Store category updated successfully", storeCategory });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const deleteStoreCategory = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({
-      message: `${id} - tai amitnii oldsongui`,
-    });
+    return res.status(400).json({ message: "Store category ID is required" });
   }
   try {
     const storeCategory = await StoreCategory.findByIdAndDelete(id);
-    res
-      .status(201)
-      .json({ message: `${id} - tai amitanii medeelel ustlaa`, storeCategory });
+    res.status(200).json({ message: `Store category ${id} deleted`, storeCategory });
   } catch (error) {
-    console.log("ERROR", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

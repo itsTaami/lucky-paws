@@ -1,4 +1,4 @@
-import React, { useContext,useState, Fragment } from 'react'
+import React, { useContext, Fragment } from 'react'
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { CardContext } from '@/context/ShoppingCardContext';
@@ -9,7 +9,6 @@ import Image from 'next/image';
 
 export default function ShoppingCart({ open, setOpen }: any) {
 const { card, setCard } = useContext(CardContext);
-const [totalPrice, setTotalPrice] = useState(0);
 const ShoppingCart = card?.items;
 const priceArray: number[] = ShoppingCart?.map((el) => el.products.price);
 const priceTotal: number = priceArray?.reduce(function (a: number, b: number) {

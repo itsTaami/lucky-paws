@@ -1,6 +1,4 @@
-import { Router } from "express";
-import bodyParser from "body-parser";
-
+import { Router } from 'express'
 import {
   getUser,
   getAllUsers,
@@ -11,22 +9,19 @@ import {
   getFavAnimal,
   addFavAnimal,
   removeFavAnimal,
-  addShoppingProduct, 
-  removeShoppingProduct, 
-  getShoppingProduct
-} from "../controller/user";
+  addShoppingProduct,
+  removeShoppingProduct,
+  getShoppingProduct,
+} from '../controller/user'
 
-const router = Router();
-const jsonParser = bodyParser.json();
+const router = Router()
 
-router.route("/").get(getAllUsers);
-router.route("/:id").get(getUser).put(updateUser).delete(deleteUser);
-router.route("/signin").post(jsonParser, signIn);
-router.route("/signup").post(jsonParser, signUp);
+router.route('/').get(getAllUsers)
+router.route('/signin').post(signIn)
+router.route('/signup').post(signUp)
+router.route('/:id').get(getUser).put(updateUser).delete(deleteUser)
 
-router.route("/favorites").post(addFavAnimal)
-router.route("/favorites/:id").get(getFavAnimal).delete(removeFavAnimal);
-router.route("/shoppingProduct").post(addShoppingProduct).get(getShoppingProduct)
-router.route("/shoppingProduct/:id").put(removeShoppingProduct);
+router.route('/:id/favorites').get(getFavAnimal).post(addFavAnimal).delete(removeFavAnimal)
+router.route('/:id/shoppingProduct').get(getShoppingProduct).post(addShoppingProduct).delete(removeShoppingProduct)
 
-export default router;
+export default router

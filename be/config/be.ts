@@ -1,10 +1,17 @@
-import mongoose from "mongoose";
-const connectDB = async (uri: string): Promise<void> => {
-  try {
-    await mongoose.connect(uri);
-  } catch (error) {
-    console.log("ERROR", error);
-  }
-};
+import mongoose from 'mongoose'
 
-export default connectDB;
+const connectDB = async (uri: string): Promise<void> => {
+  if (!uri) {
+    console.error('MONGO_URI is not set. Database connection skipped.')
+    return
+  }
+  try {
+    await mongoose.connect(uri)
+    console.log('MongoDB connected')
+  } catch (error) {
+    console.error('MongoDB connection failed:', error)
+    process.exit(1)
+  }
+}
+
+export default connectDB
