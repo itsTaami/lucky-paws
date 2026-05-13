@@ -1,26 +1,23 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-import { IBlog } from "@/utils/interfaces";
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { IBlog } from '@/utils/interfaces'
+import API_URL from '@/utils/api'
 
 export const useBlogs = () => {
-  const [blogs, setBlog] = useState<IBlog[]>([]);
+  const [blogs, setBlog] = useState<IBlog[]>([])
 
   const getAllBlogs = async () => {
     try {
-      const result = await axios.get(
-        "https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app/blog"
-      );
-      setBlog(result.data.blog);
+      const result = await axios.get(`${API_URL}/blog`)
+      setBlog(result.data.blog)
     } catch (err) {
-      console.log("ERR", err);
+      console.error('Failed to fetch blogs:', err)
     }
-  };
-  // console.log(blogs)
+  }
 
   useEffect(() => {
-    getAllBlogs();
-  }, []);
+    getAllBlogs()
+  }, [])
 
-  return {blogs};
-};
+  return { blogs }
+}

@@ -266,25 +266,19 @@ const Product = ({ product }: any) => {
   );
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app'
+
 export async function getStaticPaths() {
-  const res = await fetch("https://lucky-paws-chi.vercel.app/product");
-  const products = await res.json();
-  const ids = products?.product?.map((product: any) => product._id);
-  const paths = ids.map((id: any) => ({ params: { id: id.toString() } }));
-  return {
-    paths: paths,
-    fallback: true,
-  };
+  const res = await fetch(`${API_URL}/product`)
+  const products = await res.json()
+  const paths = products?.product?.map((product: any) => ({ params: { id: product._id.toString() } })) ?? []
+  return { paths, fallback: true }
 }
 
 export async function getStaticProps({ params }: any) {
-  const res = await fetch(
-    `https://lucky-paws-chi.vercel.app/product/${params.id}`
-  );
-  const data = await res.json();
-  console.log("data:", data);
-
-  return { props: { product: data.baraa } };
+  const res = await fetch(`${API_URL}/product/${params.id}`)
+  const data = await res.json()
+  return { props: { product: data.baraa } }
 }
 
 export default Product;

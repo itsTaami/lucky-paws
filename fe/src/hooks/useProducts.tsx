@@ -1,30 +1,23 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-import {
-  IProduct,
-  IProductType,
-  IStoreCategory,
-} from "../utils/interfaces/index";
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { IProduct } from '../utils/interfaces/index'
+import API_URL from '../utils/api'
 
 export const useProducts = () => {
-  const [products, setProduct] = useState<IProduct[]>([]);
+  const [products, setProduct] = useState<IProduct[]>([])
 
-  const getAllPruducts = async () => {
+  const getAllProducts = async () => {
     try {
-      const result = await axios.get(
-        "https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app/product"
-      );
-      const product = result.data.product;
-      setProduct(product);
+      const result = await axios.get(`${API_URL}/product`)
+      setProduct(result.data.product)
     } catch (err) {
-      console.log("ERR", err);
+      console.error('Failed to fetch products:', err)
     }
-  };
+  }
 
   useEffect(() => {
-    getAllPruducts();
-  }, []);
+    getAllProducts()
+  }, [])
 
-  return { products, setProduct };
-};
+  return { products, setProduct }
+}

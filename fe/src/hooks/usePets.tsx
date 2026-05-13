@@ -1,97 +1,48 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-import { IAnimal } from "../utils/interfaces/index";
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { IAnimal } from '../utils/interfaces/index'
+import API_URL from '../utils/api'
 
 export const useAnimals = () => {
-  const [animals, setAnimal] = useState<IAnimal[]>([]);
-  // const [newAnimal, setNewAnimal] = useState({
-  //   name: "",
-  //   age: "",
-  //   type: "",
-  //   typeId: "",
-  //   gender: "",
-  //   size: "",
-  //   health: "",
-  //   location: "",
-  //   imgs: [],
-  // });
+  const [animals, setAnimal] = useState<IAnimal[]>([])
 
   const getAllAnimals = async () => {
     try {
-      const result = await axios.get(
-        "https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app/animal"
-      );
-      const res = result.data.animal;
-      setAnimal(res);
-      // console.log(result);
+      const result = await axios.get(`${API_URL}/animal`)
+      setAnimal(result.data.animal)
     } catch (err) {
-      console.log("ERR", err);
+      console.error('Failed to fetch animals:', err)
     }
-  };
+  }
 
   const addAnimal = async (newAnimal: any) => {
     try {
-      const response = await axios.post(
-        "https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app/animal",
-        newAnimal
-      );
-      const createdAnimal = response.data.animal;
-      // Update the animals state to include the newly created animal
-      setAnimal([...animals, createdAnimal]);
+      const response = await axios.post(`${API_URL}/animal`, newAnimal)
+      setAnimal(prev => [...prev, response.data.animal])
     } catch (error) {
-      console.error("Error adding animal:", error, newAnimal);
+      console.error('Error adding animal:', error)
     }
-  };
+  }
 
   const updateAnimal = async ({ animalId, dataPass }: any) => {
     try {
-      const response = await axios.put(
-        `https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app/animal/${animalId}`,
-        dataPass
-      );
-      console.log("Updated animal: ", response.data);
+      await axios.put(`${API_URL}/animal/${animalId}`, dataPass)
     } catch (error) {
-      console.log("Error: ", error);
+      console.error('Error updating animal:', error)
     }
-  };
-  // const addAnimal = async (newAnimal:any) => {
-  //   try {
-  //     const result = await axios.post(
-  //       "http://lucky-paws-api.onrender.com/animal", newAnimal
-  //     );
-  //     setNewAnimal({
-  //       name: "",
-  //       age: "",
-  //       type: "",
-  //       typeId: "",
-  //       gender: "",
-  //       size: "",
-  //       health: "",
-  //       location: "",
-  //       imgs: [],
-  //     });
-  //   } catch (err) {
-  //     console.log("ERR", err,newAnimal);
-  //   }
-  // };
+  }
 
   const deleteAnimal = async (animalId: string) => {
     try {
-      await axios.delete(
-        `https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app/animal/${animalId}`
-      );
-      // setAnimal(result.data.animal);
-      console.log(animalId);
+      await axios.delete(`${API_URL}/animal/${animalId}`)
     } catch (err) {
-      console.log("ERR", err);
-      // console.log(animalId);
+      console.error('Error deleting animal:', err)
     }
-  };
+  }
 
   useEffect(() => {
-    getAllAnimals();
-  }, [0]);
+    getAllAnimals()
+  }, [])
 
-  return { animals, setAnimal, addAnimal, updateAnimal, deleteAnimal };
-};
+  return { animals, setAnimal, addAnimal, updateAnimal, deleteAnimal }
+}

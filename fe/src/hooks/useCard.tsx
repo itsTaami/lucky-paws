@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-import { ICard } from "@/utils/interfaces";
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { ICard } from '@/utils/interfaces'
+import API_URL from '@/utils/api'
 
 export const useCard = () => {
-  const [card, setCard] = useState<ICard[]>([]);
+  const [card, setCard] = useState<ICard[]>([])
 
   const createCard = async () => {
     try {
-      const result = await axios.post(
-        "https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app/product"
-      );
-      setCard(result.data.card);
+      const result = await axios.post(`${API_URL}/product`)
+      setCard(result.data.card)
     } catch (err) {
-      console.log("ERR", err);
+      console.error('Error creating card:', err)
     }
-  };
-  useEffect(() => {
-    createCard();
-  }, []);
+  }
 
-  return { card, createCard };
-};
+  useEffect(() => {
+    createCard()
+  }, [])
+
+  return { card, createCard }
+}

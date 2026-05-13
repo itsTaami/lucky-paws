@@ -41,23 +41,17 @@ export default function Blog({ blog }: any) {
   );
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app'
+
 export async function getStaticPaths() {
-  const res = await fetch("https://lucky-paws-chi.vercel.app/blog");
-  const blogs = await res.json();
-  const ids = blogs?.blog?.map((blog: any) => blog._id);
-  const paths = ids.map((id: String) => ({ params: { id: id.toString() } }));
-  return {
-    paths: paths,
-    fallback: true,
-  };
+  const res = await fetch(`${API_URL}/blog`)
+  const blogs = await res.json()
+  const paths = blogs?.blog?.map((blog: any) => ({ params: { id: blog._id.toString() } })) ?? []
+  return { paths, fallback: true }
 }
 
 export async function getStaticProps({ params }: any) {
-  const res = await fetch(
-    `https://lucky-paws-chi.vercel.app/blog/${params.id}`
-  );
-  const data = await res.json();
-  console.log("data:", data);
-
-  return { props: { blog: data.blog } };
+  const res = await fetch(`${API_URL}/blog/${params.id}`)
+  const data = await res.json()
+  return { props: { blog: data.blog } }
 }

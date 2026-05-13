@@ -170,25 +170,19 @@ const Animal = ({ animal }: any) => {
   );
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://lucky-paws-g5kgwvgpn-luckypaws.vercel.app'
+
 export async function getStaticPaths() {
-  const res = await fetch("https://lucky-paws-chi.vercel.app/animal");
-  const animals = await res.json();
-  const ids = animals?.animal?.map((animal: any) => animal._id);
-  const paths = ids.map((id: any) => ({ params: { id: id.toString() } }));
-  return {
-    paths: paths,
-    fallback: true,
-  };
+  const res = await fetch(`${API_URL}/animal`)
+  const animals = await res.json()
+  const paths = animals?.animal?.map((animal: any) => ({ params: { id: animal._id.toString() } })) ?? []
+  return { paths, fallback: true }
 }
 
 export async function getStaticProps({ params }: any) {
-  const res = await fetch(
-    `https://lucky-paws-chi.vercel.app/animal/${params.id}`
-  );
-  const data = await res.json();
-  console.log("data:", data);
-
-  return { props: { animal: data.animal } };
+  const res = await fetch(`${API_URL}/animal/${params.id}`)
+  const data = await res.json()
+  return { props: { animal: data.animal } }
 }
 
 export default Animal;
