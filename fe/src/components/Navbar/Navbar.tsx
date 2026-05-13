@@ -49,6 +49,7 @@ export default function Navbar() {
   const navigation = [
     { name: "Home", href: "/", current: false },
     { name: "Pets", href: "/animal", current: false },
+    { name: "Find My Pet", href: "/pet-match", current: false },
     { name: "Shop", href: "/products", current: false },
     { name: "Blog", href: "/blog", current: false },
   ];
